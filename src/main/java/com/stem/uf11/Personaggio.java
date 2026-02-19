@@ -30,4 +30,75 @@ public class Personaggio {
         if (this.vita > MAX_VITA)
             this.vita = MAX_VITA;
     }
+
+    public void siMuove(char dir) throws IllegalArgumentException{
+        if (dir != 'a' && dir != 's' && dir != 'd' && dir != 'w')
+            throw new IllegalArgumentException("Direzione non valida");
+        switch(dir){
+            case 'a': try {
+                        this.posizione.setX(this.posizione.getX()-1);
+                      } catch (IllegalArgumentException e) {}
+                      break;
+            case 's': try {
+                        this.posizione.setY(this.posizione.getY()+1);
+                      } catch (IllegalArgumentException e) {}
+                      break;
+            case 'd': try {
+                        this.posizione.setX(this.posizione.getX()+1);
+                      } catch (IllegalArgumentException e) {}
+                      break;
+            case 'w': try {
+                        this.posizione.setY(this.posizione.getY()-1);
+                      } catch (IllegalArgumentException e) {}
+                      break;
+        }
+    }
+
+    // Getters
+    public String getNome() {
+        return nome;
+    }
+
+    public String getProvenienza() {
+        return provenienza;
+    }
+
+    public int getEtà() {
+        return età;
+    }
+
+    public int getVita() {
+        return vita;
+    }
+
+    public Posizione getPosizione() {
+        return posizione;
+    }
+
+    public void setVita(int vita) throws IllegalArgumentException {
+        if (vita < 0 || vita > MAX_VITA)
+            throw new IllegalArgumentException("Vita non valida");
+        this.vita = vita;
+    }
+
+    @Override
+    public String toString() {
+        return "Personaggio{" +
+                "nome='" + nome + '\'' +
+                ", provenienza='" + provenienza + '\'' +
+                ", età=" + età +
+                ", vita=" + vita +
+                ", posizione=" + posizione +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Personaggio other = (Personaggio) obj;
+        return this.età == other.età && this.nome.equals(other.nome) 
+        && this.provenienza.equals(other.provenienza);
+    }
+
 }
