@@ -2,8 +2,8 @@ package com.stem.uf11;
 
 public class Personaggio {
 
-    private static final int MIN_ETA = 10;
-    private static final int MAX_VITA = 100;
+    public static final int MIN_ETA = 10;
+    public static final int MAX_VITA = 100;
 
     private String nome;
     private String provenienza;

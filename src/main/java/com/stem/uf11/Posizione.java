@@ -2,8 +2,8 @@ package com.stem.uf11;
 
 public class Posizione {
 
-    public static final int DIM_X = 100;
-    public static final int DIM_Y = 100;
+    public static final int DIM_X = 50;
+    public static final int DIM_Y = 25;
 
     private int x;
     private int y;
