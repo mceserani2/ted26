@@ -19,7 +19,14 @@ public class Ted {
 
 		Scanner sc = new Scanner(System.in);
 
-		Personaggio p = new Personaggio("Gandalf", "Valinor", 2019, Personaggio.MAX_VITA, new Posizione(0,0));
+		Mago M = new Mago("Gandalf", "Valinor", 2019, Personaggio.MAX_VITA, 100, new Posizione(0,0));
+
+		Magia m1 = new Magia("Palla di fuoco", 20, 30);
+
+		Mago nemici[] = new Mago[3];
+		nemici[0] = new Mago("Saruman", "Valinor", 2019, Personaggio.MAX_VITA, 100, new Posizione(5,5));
+		nemici[1] = new Mago("Oronzo", "Puglia", 50, Personaggio.MAX_VITA, 100, new Posizione(7,7));
+		nemici[2] = new Mago("Merlino", "Inghilterra", 2019, Personaggio.MAX_VITA, 100, new Posizione(10,10));
 
 		// Ciclo principale
 		do{
@@ -36,9 +43,18 @@ public class Ted {
 			// 2. Disegna mappa
 			for (int j = 0; j < Posizione.DIM_Y; j++){
 				for(int i = 0; i < Posizione.DIM_X; i++){
-					if (p.getPosizione().equals(new Posizione(i,j)))
-						System.out.print("P");
-					else
+					boolean nemico = false;
+					for (int k = 0; k < nemici.length ; k++) {
+						if (nemici[k].getPosizione().equals(new Posizione(i,j))){
+							nemico = true;
+							break;
+						}
+					}
+					if (M.getPosizione().equals(new Posizione(i,j)))
+						System.out.print("M");
+					else if (nemico){
+						System.out.print("N");
+					}else
 						System.out.print(".");
 				}
 				System.out.println();
@@ -49,7 +65,7 @@ public class Ted {
 
 			// 4. Esegui comando
 			try{
-				p.siMuove(opt);
+				M.siMuove(opt);
 			} catch (IllegalArgumentException e) {}
 
 		}while(opt != 'q');
