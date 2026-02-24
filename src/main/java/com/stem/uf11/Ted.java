@@ -4,8 +4,6 @@ import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
 
-import javax.sound.midi.SysexMessage;
-
 public class Ted {
 	
 	private Ted(){
