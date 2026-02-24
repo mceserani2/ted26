@@ -52,6 +52,8 @@ public class Posizione {
     }
 
     public static boolean checkXY(int x, int y){
+        if (x == -1 && y == -1)
+            return true;
         return (x >= 0 && x < DIM_X) && (y >= 0 && y < DIM_Y);
     }
 

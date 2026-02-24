@@ -1,7 +1,10 @@
 package com.stem.uf11;
 
+import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
+
+import javax.sound.midi.SysexMessage;
 
 public class Ted {
 	
@@ -24,7 +27,10 @@ public class Ted {
 
 		Mago M = new Mago("Gandalf", "Valinor", 2019, Personaggio.MAX_VITA, 100, new Posizione(0,0));
 
-		Magia m1 = new Magia("Palla di fuoco", 20, 30);
+		Magia magie[] = new Magia[3];
+		magie[0] = new Magia("Fulmine", 20, 30);
+		magie[1] = new Magia("Palla di Fuoco", 30, 50);
+		magie[2] = new Magia("Raggio di Gelo", 15, 20);
 
 		Mago nemici[] = new Mago[3];
 		nemici[0] = new Mago("Saruman", "Valinor", 2019, Personaggio.MAX_VITA, 100, new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)));
@@ -49,6 +55,9 @@ public class Ted {
 			// 3. Accetta comando ('q' per uscire, oppure 'a,s,d,w' per muoversi)
 			// 4. Esegui comando
 			// 5. I nemici si muovono
+			// 6. Eventuali combattimenti
+			// 7. Eventuali raccolte di cibo
+			// 8. Eventuali raccolte di pozioni
 
 			// 1. Clear screen
 			System.out.print("\033[H\033[2J");
@@ -102,33 +111,86 @@ public class Ted {
 
 			// 5. I nemici si muovono
 			for (int i = 0;i < nemici.length; i++){
-				if (nemici[i].getPosizione().distanza(M.getPosizione())<10){
-					int dx = M.getPosizione().getX() - nemici[i].getPosizione().getX();
-					int dy = M.getPosizione().getY() - nemici[i].getPosizione().getY();
-					if (Math.abs(dx) >= Math.abs(dy)){
-						// Ci si muove lungo x
-						if (dx < 0)
-							nemici[i].siMuove('a');
-						else
-							nemici[i].siMuove('d');
+				if (nemici[i].getVita() > 0){
+					if (nemici[i].getPosizione().distanza(M.getPosizione())<10){
+						int dx = M.getPosizione().getX() - nemici[i].getPosizione().getX();
+						int dy = M.getPosizione().getY() - nemici[i].getPosizione().getY();
+						if (Math.abs(dx) >= Math.abs(dy)){
+							// Ci si muove lungo x
+							if (dx < 0)
+								nemici[i].siMuove('a');
+							else
+								nemici[i].siMuove('d');
+						}else{
+							// Ci si muove lungo y
+							if (dy < 0)
+								nemici[i].siMuove('w');
+							else
+								nemici[i].siMuove('s');
+						}
 					}else{
-						// Ci si muove lungo y
-						if (dy < 0)
-							nemici[i].siMuove('w');
-						else
-							nemici[i].siMuove('s');
+						int m = r.nextInt(4);
+						switch(m){
+							case 0: nemici[i].siMuove('w');
+									break;
+							case 1: nemici[i].siMuove('s');
+									break;
+							case 2: nemici[i].siMuove('d');
+									break;
+							case 3: nemici[i].siMuove('a');
+									break;
+						}
 					}
-				}else{
-					int m = r.nextInt(4);
-					switch(m){
-						case 0: nemici[i].siMuove('w');
-								break;
-						case 1: nemici[i].siMuove('s');
-								break;
-						case 2: nemici[i].siMuove('d');
-								break;
-						case 3: nemici[i].siMuove('a');
-								break;
+				}
+			}
+
+			// 6. Eventuali combattimenti
+			for (int k = 0;k < nemici.length; k++){
+				if (nemici[k].getPosizione().equals(M.getPosizione())){
+					System.out.println("Devi combattere con il nemico: " + nemici[k].getNome());
+					System.out.println("Scegli la magia:");
+					for (int u = 0; u < magie.length; u++){
+						System.out.println(u + ". " + magie[u].getNome());
+					}
+					int m;
+					do{
+						System.out.print(":>");
+						try{
+							m = sc.nextInt();
+						} catch (InputMismatchException e){
+							m = -1;
+						}
+						if (m < 0 || m >= magie.length)
+							System.out.println("Errore!");
+					}while(m < 0 || m >= magie.length);
+					try{
+						if (M.lanciaMagia(magie[m], nemici[k]))
+							System.out.println("Hai colpito il nemico!");
+						else
+							System.out.println("Non hai colpito il nemico!");							
+					} catch (Exception e){
+						System.out.println("Non hai mana sufficiente!");
+					}
+					if (nemici[k].getVita() == 0){
+						System.out.println(nemici[k].getNome() + " è morto!");
+						try{
+							nemici[k].muore();
+						} catch(Exception e){}
+					} else {
+						try{
+							if (nemici[k].lanciaMagia(magie[r.nextInt(magie.length)], M))
+								System.out.println("Il nemico ti ha colpito!");
+							else
+								System.out.println("Il nemico non ti ha colpito !");							
+						} catch (Exception e){
+							System.out.println("Il nemico non ti ha colpito!");
+						}
+						if (M.getVita() == 0){
+							System.out.println("Sei morto!");
+							System.out.println("E' stato bello finché è durato.");
+							sc.close();
+							return;
+						}
 					}
 				}
 			}
@@ -136,7 +198,7 @@ public class Ted {
 		}while(opt != 'q');
 
 		sc.close();
-
+		
     }
 
 }

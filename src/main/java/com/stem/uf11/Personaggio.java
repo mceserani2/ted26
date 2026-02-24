@@ -81,6 +81,13 @@ public class Personaggio {
         this.vita = vita;
     }
 
+    public void muore() throws Exception{
+        if (this.vita > 0)
+            throw new Exception("Non puoi morire ora!");
+        this.posizione = new Posizione(-1, -1);
+    }
+
+
     @Override
     public String toString() {
         return "Personaggio{" +
