@@ -15,7 +15,7 @@ public class Ted {
 	 * 
 	 * @param args Command line arguments
 	 * @author Matteo Ceserani
-	 * @version 0.9 Alpha
+	 * @version 1.0
 	 */
     public static void main(String[] args){
 
