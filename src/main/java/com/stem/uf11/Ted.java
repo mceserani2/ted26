@@ -1,8 +1,10 @@
 package com.stem.uf11;
 
+import java.io.File;
 import java.util.InputMismatchException;
 import java.util.Random;
 import java.util.Scanner;
+import tools.jackson.databind.ObjectMapper;
 
 public class Ted {
 	
@@ -17,33 +19,64 @@ public class Ted {
 	 */
     public static void main(String[] args){
 
+		Mago M = null;
+		Mago[] nemici  = null;;
+		Cibo[] cibi  = null;
+		Pozione[] pozioni = null;
+		Magia[] magie = null;
+
+		ObjectMapper mapper = new ObjectMapper();
+
 		Random r = new Random(System.currentTimeMillis());
 
 		char opt;
 
 		Scanner sc = new Scanner(System.in);
 
-		Mago M = new Mago("Gandalf", "Valinor", 2019, Personaggio.MAX_VITA, 100, new Posizione(0,0));
+		System.out.println("Benvenuto in Ted's Adventure!");
+		System.out.print("Vuoi caricare una partita precedente? (y/n)");
+		char load = sc.next().charAt(0);
 
-		Magia magie[] = new Magia[3];
-		magie[0] = new Magia("Fulmine", 20, 30);
-		magie[1] = new Magia("Palla di Fuoco", 30, 50);
-		magie[2] = new Magia("Raggio di Gelo", 15, 20);
+		if (load == 'y' || load == 'Y'){
+			try{
+				// Carica stato del mago da file JSON
+				M = mapper.readValue(new File("./mago.json"), Mago.class);
+				// Carica stato dei nemici da file JSON
+				nemici = mapper.readValue(new File("./nemici.json"), Mago[].class);
+				// Carica stato dei cibi da file JSON
+				cibi = mapper.readValue(new File("./cibi.json"), Cibo[].class);
+				// Carica stato delle pozioni da file JSON
+				pozioni = mapper.readValue(new File("./pozioni.json"), Pozione[].class);
+				// Carica stato delle magie da file JSON
+				magie = mapper.readValue(new File("./magie.json"), Magia[].class);
+			} catch (Exception e){
+				System.out.println("Errore nel caricamento della partita!");
+				sc.close();
+				return;
+			}
+		} else {
+			M = new Mago("Gandalf", "Valinor", 2019, Personaggio.MAX_VITA, 100, new Posizione(0,0));
 
-		Mago nemici[] = new Mago[3];
-		nemici[0] = new Mago("Saruman", "Valinor", 2019, Personaggio.MAX_VITA, 100, new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)));
-		nemici[1] = new Mago("Oronzo", "Puglia", 50, Personaggio.MAX_VITA, 100, new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)));
-		nemici[2] = new Mago("Merlino", "Inghilterra", 2019, Personaggio.MAX_VITA, 100, new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)));
+			magie = new Magia[3];
+			magie[0] = new Magia("Fulmine", 20, 30);
+			magie[1] = new Magia("Palla di Fuoco", 30, 50);
+			magie[2] = new Magia("Raggio di Gelo", 15, 20);
 
-		Pozione pozioni[] = new Pozione[3];
-		pozioni[0] = new Pozione("Sacro Graal",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),70);
-		pozioni[1] = new Pozione("Acqua di Lourdes",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),25);
-		pozioni[2] = new Pozione("Acquavite",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),10);
+			nemici = new Mago[3];
+			nemici[0] = new Mago("Saruman", "Valinor", 2019, Personaggio.MAX_VITA, 100, new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)));
+			nemici[1] = new Mago("Oronzo", "Puglia", 50, Personaggio.MAX_VITA, 100, new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)));
+			nemici[2] = new Mago("Merlino", "Inghilterra", 2019, Personaggio.MAX_VITA, 100, new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)));
 
-		Cibo cibi[] = new Cibo[3];
-		cibi[0] = new Cibo("Bistecca",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),30);
-		cibi[1] = new Cibo("Pizza",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),45);
-		cibi[2] = new Cibo("Lasagne",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),50);
+			pozioni = new Pozione[3];
+			pozioni[0] = new Pozione("Sacro Graal",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),70);
+			pozioni[1] = new Pozione("Acqua di Lourdes",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),25);
+			pozioni[2] = new Pozione("Acquavite",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),10);
+
+			cibi = new Cibo[3];
+			cibi[0] = new Cibo("Bistecca",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),30);
+			cibi[1] = new Cibo("Pizza",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),45);
+			cibi[2] = new Cibo("Lasagne",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),50);
+		}
 
 		// Clear screen
 		System.out.print("\033[H\033[2J");
@@ -172,8 +205,56 @@ public class Ted {
 				}
 			}
 			
+			// 7. Eventuali raccolte di cibo
+			for(int k = 0; k < cibi.length; k++){
+				if (cibi[k].getPosizione().equals(M.getPosizione())){
+					System.out.print("Desideri mangiare " + cibi[k].getNome() + "? (y/n)");
+					char c = sc.next().charAt(0);
+					if (c == 'y' || c == 'Y'){
+						try{
+							M.mangia(cibi[k]);
+							cibi[k].setPosizione(new Posizione(r.nextInt(Posizione.DIM_X), r.nextInt(Posizione.DIM_Y)));
+						} catch (Exception e){
+							System.out.println("Non hai fame!");
+						}
+					}
+					System.out.println("Vita: " + M.getVita() + " Mana: " + M.getMana());
+					System.out.print("Premi invio per continuare...");
+					sc.nextLine();
+				}
+			}
+
+			// 8. Eventuali raccolte di pozioni
+			for(int k = 0; k < pozioni.length; k++){
+				if (pozioni[k].getPosizione().equals(M.getPosizione())){
+					System.out.print("Desideri prendere la pozione " + pozioni[k].getNome() + "? (y/n)");
+					char c = sc.next().charAt(0);
+					if (c == 'y' || c == 'Y'){
+						try{
+							M.bevePozione(pozioni[k]);
+							pozioni[k].setPosizione(new Posizione(r.nextInt(Posizione.DIM_X), r.nextInt(Posizione.DIM_Y)));
+						} catch (Exception e){
+							System.out.println("Non hai sete!");
+						}
+					}
+					System.out.println("Vita: " + M.getVita() + " Mana: " + M.getMana());
+					System.out.print("Premi invio per continuare...");
+					sc.nextLine();
+				}
+			}
 
 		}while(opt != 'q');
+
+		// Salva stato del mago su file JSON
+		mapper.writeValue(new File("./mago.json"), M);
+		// Salva stato dei nemici su file JSON
+		mapper.writeValue(new File("./nemici.json"), nemici);
+		// Salva stato dei cibi su file JSON
+		mapper.writeValue(new File("./cibi.json"), cibi);
+		// Salva stato delle pozioni su file JSON
+		mapper.writeValue(new File("./pozioni.json"), pozioni);
+		// Salva stato delle magie su file JSON
+		mapper.writeValue(new File("./magie.json"), magie);
 
 		sc.close();
 		
