@@ -45,74 +45,41 @@ public class Ted {
 		cibi[1] = new Cibo("Pizza",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),45);
 		cibi[2] = new Cibo("Lasagne",new Posizione(r.nextInt(Posizione.DIM_X),r.nextInt(Posizione.DIM_Y)),50);
 
+		// Clear screen
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+
+		// Disegna mappa
+		disegnaMappa(nemici, cibi, pozioni, M);
+
 		// Ciclo principale
 		do{
 
-			// 1. Clear screen
-			// 2. Disegna mappa
-			// 3. Accetta comando ('q' per uscire, oppure 'a,s,d,w' per muoversi)
-			// 4. Esegui comando
-			// 5. I nemici si muovono
+			// 1. Accetta comando ('q' per uscire, oppure 'a,s,d,w' per muoversi)
+			// 2. Il mago si muove
+			// 3. I nemici si muovono
+			// 4. Clear screen
+			// 5. Disegna mappa
 			// 6. Eventuali combattimenti
 			// 7. Eventuali raccolte di cibo
 			// 8. Eventuali raccolte di pozioni
 
-			// 1. Clear screen
-			System.out.print("\033[H\033[2J");
-			System.out.flush();
-
-			// 2. Disegna mappa
-			for (int j = 0; j < Posizione.DIM_Y; j++){
-				for(int i = 0; i < Posizione.DIM_X; i++){
-					boolean nemico = false;
-					boolean cibo = false;
-					boolean pozione = false;
-					for (int k = 0;k < nemici.length; k++){
-						if (nemici[k].getPosizione().equals(new Posizione(i,j))){
-							nemico = true;
-							break;
-						}
-					}
-					for (int k = 0;k < cibi.length; k++){
-						if (cibi[k].getPosizione().equals(new Posizione(i,j))){
-							cibo = true;
-							break;
-						}
-					}
-					for (int k = 0;k < pozioni.length; k++){
-						if (pozioni[k].getPosizione().equals(new Posizione(i,j))){
-							pozione = true;
-							break;
-						}
-					}
-					if (M.getPosizione().equals(new Posizione(i,j)))
-						System.out.print("M");
-					else if (nemico)
-						System.out.print("N");
-					else if (cibo)
-						System.out.print("c");
-					else if (pozione)
-						System.out.print("p");
-					else
-						System.out.print(".");
-				}
-				System.out.println();
-			}
-
-			// 3. Accetta comando: un carattere da tastiera, senza premere invio
+			// 1. Accetta comando: un carattere da tastiera, senza premere invio
+			System.out.print("Comando (q per uscire): ");
 			opt = sc.next().charAt(0);
 
-			// 4. Esegui comando
+			// 2. Esegui comando
+			Posizione oldPos = M.getPosizione();
 			try{
 				M.siMuove(opt);
 			} catch (IllegalArgumentException e) {}
 
-			// 5. I nemici si muovono
+			// 3. I nemici si muovono
 			for (int i = 0;i < nemici.length; i++){
-				if (nemici[i].getVita() > 0){
-					if (nemici[i].getPosizione().distanza(M.getPosizione())<10){
-						int dx = M.getPosizione().getX() - nemici[i].getPosizione().getX();
-						int dy = M.getPosizione().getY() - nemici[i].getPosizione().getY();
+				if (nemici[i].getVita() > 0 && nemici[i].getPosizione().distanza(oldPos) > 1){
+					if (nemici[i].getPosizione().distanza(oldPos)<10){
+						int dx = oldPos.getX() - nemici[i].getPosizione().getX();
+						int dy = oldPos.getY() - nemici[i].getPosizione().getY();
 						if (Math.abs(dx) >= Math.abs(dy)){
 							// Ci si muove lungo x
 							if (dx < 0)
@@ -142,6 +109,13 @@ public class Ted {
 				}
 			}
 
+			// 4. Clear screen
+			System.out.print("\033[H\033[2J");
+			System.out.flush();
+
+			// 5. Disegna mappa
+			disegnaMappa(nemici, cibi, pozioni, M);
+
 			// 6. Eventuali combattimenti
 			for (int k = 0;k < nemici.length; k++){
 				if (nemici[k].getPosizione().equals(M.getPosizione())){
@@ -155,8 +129,10 @@ public class Ted {
 						System.out.print(":>");
 						try{
 							m = sc.nextInt();
+							sc.nextLine();
 						} catch (InputMismatchException e){
 							m = -1;
+							sc.nextLine();
 						}
 						if (m < 0 || m >= magie.length)
 							System.out.println("Errore!");
@@ -190,13 +166,56 @@ public class Ted {
 							return;
 						}
 					}
+					System.out.println("Vita: " + M.getVita() + " Mana: " + M.getMana());
+					System.out.print("Premi invio per continuare...");
+					sc.nextLine();
 				}
 			}
+			
 
 		}while(opt != 'q');
 
 		sc.close();
 		
     }
+
+	private static void disegnaMappa(Mago[] nemici, Cibo[] cibi, Pozione[] pozioni, Mago M){
+		for (int j = 0; j < Posizione.DIM_Y; j++){
+			for(int i = 0; i < Posizione.DIM_X; i++){
+				boolean nemico = false;
+				boolean cibo = false;
+				boolean pozione = false;
+				for (int k = 0;k < nemici.length; k++){
+					if (nemici[k].getPosizione().equals(new Posizione(i,j))){
+						nemico = true;
+						break;
+					}
+				}
+				for (int k = 0;k < cibi.length; k++){
+					if (cibi[k].getPosizione().equals(new Posizione(i,j))){
+						cibo = true;
+						break;
+					}
+				}
+				for (int k = 0;k < pozioni.length; k++){
+					if (pozioni[k].getPosizione().equals(new Posizione(i,j))){
+						pozione = true;
+						break;
+					}
+				}
+				if (M.getPosizione().equals(new Posizione(i,j)))
+					System.out.print("M");
+				else if (nemico)
+					System.out.print("N");
+				else if (cibo)
+					System.out.print("c");
+				else if (pozione)
+					System.out.print("p");
+				else
+					System.out.print(".");
+			}
+			System.out.println();
+		}
+	}
 
 }
