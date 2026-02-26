@@ -183,6 +183,19 @@ public class Ted {
 						try{
 							nemici[k].muore();
 						} catch(Exception e){}
+						// Controlla se hai vinto
+						boolean vinto = true;
+						for (int u = 0; u < nemici.length; u++){
+							if (nemici[u].getVita() > 0){
+								vinto = false;
+								break;
+							}
+						}
+						if (vinto){
+							System.out.println("Hai vinto!");
+							sc.close();
+							return;
+						}
 					} else {
 						try{
 							if (nemici[k].lanciaMagia(magie[r.nextInt(magie.length)], M))
